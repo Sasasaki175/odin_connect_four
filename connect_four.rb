@@ -34,15 +34,29 @@ class ConnectFour
       create_ascending_arr(5, 2),
       create_ascending_arr(5, 3)
     ]
-    diagonals_descending = []
+    diagonals_descending = [
+      create_descending_arr(0, 0),
+      create_descending_arr(0, 1),
+      create_descending_arr(0, 2),
+      create_descending_arr(0, 3),
+      create_descending_arr(1, 0),
+      create_descending_arr(2, 0)
+    ]
     
     diagonals_ascending.each do |diag_asc|
-      return true if diag_asc.join.include?('oooo') || diag_asc.join.include?('xxxx')
+      diag_asc_str = diag_asc.join
+      return true if diag_asc_str.include?('oooo') || diag_asc_str.include?('xxxx')
     end
 
+    diagonals_descending.each do |diag_desc|
+      diag_desc_str = diag_desc.join
+      return true if diag_desc_str.include?('oooo') || diag_desc_str.include?('xxxx')
+    end
+
+    false
   end
 
-  # pass the row and column of the starting cell of the ascending diagonal
+  # pass the row and column of the starting cell of the ascending diagonal 
   # and it will return an array of the ascending diagonal starting from there 
   def create_ascending_arr(row, column)
     ascending_arr = []
@@ -54,5 +68,19 @@ class ConnectFour
     end
 
     ascending_arr
+  end
+
+  # pass the row and column of the starting cell of the descending diagonal 
+  # and it will return an array of the descending diagonal starting from there 
+  def create_descending_arr(row, column)
+    descending_arr = []
+
+    while row <= 5 && column <= 6 do
+      descending_arr << @board[row][column]
+      row += 1
+      column += 1
+    end
+
+    descending_arr
   end
 end
