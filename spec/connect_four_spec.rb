@@ -3,15 +3,15 @@ require_relative '../connect_four'
 describe ConnectFour do
   subject(:game) { described_class.new }
 
-  describe '#start_game' do
+  # describe '#start_game' do
 
-  end
+  # end
 
-  describe '#player_move' do
-  end
+  # describe '#player_move' do
+  # end
 
   describe '#place_token' do
-    context 'When there is no token under'
+    context 'When there is no token under' do
       before do
         game.instance_variable_set(:@board, [
           [nil, nil, nil, nil, nil, nil, nil],
@@ -19,36 +19,68 @@ describe ConnectFour do
           [nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil],
           [nil, nil, nil, nil, nil, nil, nil],
-          ['o', 'o', 'o', 'o', nil, nil, nil]
+          ['o', 'o', 'x', 'o', nil, nil, 'x']
         ])
         game.instance_variable_set(:@turn_player, 'x')
       end
 
-      it 'Put the token to the very bottom'
-        expect { game.place_token(5) }.to change { game.instance_variable_get(:@board[5][5]) }.from(nil).to('x')
+      it 'Put the token to the very bottom' do
+        expect { game.place_token(5) }.to change { game.instance_variable_get(:@board) }.to([
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          ['o', 'o', 'x', 'o', nil, 'x', 'x']
+        ])
+      end
+    end
+
+    context 'When there is a token under' do
+      before do
+        game.instance_variable_set(:@board, [
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          ['o', 'o', 'x', 'o', nil, nil, 'x']
+        ])
+        game.instance_variable_set(:@turn_player, 'x')
+      end
+
+      it 'Put the token on top of the token in the bottom' do
+        expect { game.place_token(3) }.to change { game.instance_variable_get(:@board) }.to([
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, 'x', nil, nil, nil],
+          ['o', 'o', 'x', 'o', nil, nil, 'x']
+        ])
       end
     end
   end
 
   describe '#game_over' do
-    context 'When a row is complete'
+    context 'When a row is complete' do
       before do
         allow(game).to receive(:check_row).and_return(true)
       end
 
-      it 'Finishes the game'
+      it 'Finishes the game' do
         expect(game).to be_game_over
       end
     end
 
-    context 'When win conditions are not met'
+    context 'When win conditions are not met' do
       before do
         allow(game).to receive(:check_row).and_return(false)
         allow(game).to receive(:check_column).and_return(false)
         allow(game).to receive(:check_diagonal).and_return(false)
       end
 
-      it 'Does not finish the game'
+      it 'Does not finish the game' do
         expect(game).not_to be_game_over
       end
     end
@@ -161,7 +193,7 @@ describe ConnectFour do
   end
 
   describe '#check_diagonal' do
-    context 'When the board contains four consecutive oooo in the diagonal ascending'
+    context 'When the board contains four consecutive oooo in the diagonal ascending' do
       before do
         game.instance_variable_set(:@board, [
           [nil, nil, nil, nil, nil, nil, nil],
@@ -178,7 +210,7 @@ describe ConnectFour do
       end
     end
 
-    context 'When the board contains four consecutive oooo in the diagonal descending'
+    context 'When the board contains four consecutive oooo in the diagonal descending' do
       before do
         game.instance_variable_set(:@board, [
           [nil, nil, nil, nil, nil, nil, nil],
@@ -195,7 +227,7 @@ describe ConnectFour do
       end
     end
 
-    context 'When the board contains four consecutive xxxx in the diagonal ascending'
+    context 'When the board contains four consecutive xxxx in the diagonal ascending' do
       before do
         game.instance_variable_set(:@board, [
           [nil, nil, nil, nil, nil, nil, nil],
@@ -212,7 +244,7 @@ describe ConnectFour do
       end
     end
 
-    context 'When the board contains four consecutive xxxx in the diagonal descending'
+    context 'When the board contains four consecutive xxxx in the diagonal descending' do
      before do
         game.instance_variable_set(:@board, [
           [nil, nil, nil, nil, nil, nil, nil],
@@ -229,7 +261,7 @@ describe ConnectFour do
       end
     end
 
-    context 'When the board does not contain any consecutive oooo or xxxx in both diagonal directions'
+    context 'When the board does not contain any consecutive oooo or xxxx in both diagonal directions' do
       before do
         game.instance_variable_set(:@board, [
           [nil, nil, nil, nil, nil, 'x', nil],
@@ -301,7 +333,7 @@ describe ConnectFour do
     end
 
     it 'returns the correct descending diagonal starting from (1, 1)' do
-      expect(game.create_descending_arr(1, 1)).to eq(['x', 'x', 'x'])
+      expect(game.create_descending_arr(1, 1)).to eq(['x', 'x', 'x', nil, nil])
     end
   end
 end

@@ -5,6 +5,15 @@ class ConnectFour
   def player_move
   end
 
+  def place_token(column)
+    @board.reverse_each do |row|
+      if row[column].nil?
+        row[column] = @turn_player
+        break
+      end
+    end
+  end
+
   def game_over?
     check_row || check_column || check_diagonal
   end
