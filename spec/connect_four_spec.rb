@@ -10,6 +10,26 @@ describe ConnectFour do
   describe '#player_move' do
   end
 
+  describe '#place_token' do
+    context 'When there is no token under'
+      before do
+        game.instance_variable_set(:@board, [
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          [nil, nil, nil, nil, nil, nil, nil],
+          ['o', 'o', 'o', 'o', nil, nil, nil]
+        ])
+        game.instance_variable_set(:@turn_player, 'x')
+      end
+
+      it 'Put the token to the very bottom'
+        expect { game.place_token(5) }.to change { game.instance_variable_get(:@board[5][5]) }.from(nil).to('x')
+      end
+    end
+  end
+
   describe '#game_over' do
     context 'When a row is complete'
       before do
