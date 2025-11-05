@@ -1,13 +1,46 @@
 class ConnectFour
+  def initialize
+    @board = Array.new(6) { Array.new(7, ' ') }
+    @turn_player = 'o'
+  end
+
   def start_game
+    show_board
+    player_move
+
+    puts "'#{@turn_player}' wins!"
   end
 
   def player_move
+    player_input = 0
+
+    loop do
+      puts "#{@turn_player}'s turn"
+      puts 'Choose column from 1-7'
+
+      loop do
+        player_input = gets.chomp.to_i
+        break if player_input.between?(1, 7)
+        puts 'Invalid input'
+      end
+
+      place_token(player_input - 1)
+      show_board
+
+      break if game_over?
+
+      @turn_player = if @turn_player == 'o'
+                       'x'
+                     else
+                       'o'
+                     end
+    end
   end
 
   def place_token(column)
+    # Searches nil from the bottom of the column and replace it with the turn players token
     @board.reverse_each do |row|
-      if row[column].nil?
+      if row[column] == ' '
         row[column] = @turn_player
         break
       end
@@ -35,6 +68,8 @@ class ConnectFour
   end
 
   def check_diagonal
+    # Passing possible starting points of diagonals that have 4 or more cells 
+    # to create arrays of diagonal cells
     diagonals_ascending = [
       create_ascending_arr(3, 0),
       create_ascending_arr(4, 0),
@@ -91,5 +126,23 @@ class ConnectFour
     end
 
     descending_arr
+  end
+
+  def show_board
+    puts '-1---2---3---4---5---6---7-'
+
+    @board.each do |row|
+      row.each_with_index do |cell, i|
+        print " #{cell} "
+
+        if i < row.size - 1
+          print '|'
+        else
+          puts
+        end
+      end
+
+      puts '---------------------------'
+    end
   end
 end
