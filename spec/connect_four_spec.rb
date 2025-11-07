@@ -9,15 +9,40 @@ describe ConnectFour do
 
 
   describe '#start_game' do
-    
+    before do
+      allow(game).to receive(:show_board)
+      allow(game).to receive(:player_move)
+    end
+
+    context 'When somebody wins' do
+      before do
+        allow(game).to receive(:game_over?).and_return(true)
+      end
+
+      it 'Outputs who won' do
+        winner = game.instance_variable_get(:@turn_player) 
+        expect { game.start_game }.to output("'#{winner}' wins!\n").to_stdout
+      end
+    end
+
+    context "When it's a draw" do
+      before do
+        allow(game).to receive(:game_over?).and_return(false)
+      end
+
+      it 'Outputs draw message' do
+        expect { game.start_game }.to output("It's a draw\n").to_stdout
+      end
+    end
   end
 
   describe '#player_move' do
-     before do
+    before do
       allow(game).to receive(:gets).and_return("0", "3")
       allow(game).to receive(:place_token)
       allow(game).to receive(:show_board)
       allow(game).to receive(:game_over?).and_return(false, true)
+      allow(game).to receive(:board_full?).and_return(false, false)
     end
 
     it 'prompts for input until valid and changes the player' do
@@ -359,6 +384,42 @@ describe ConnectFour do
 
     it 'returns the correct descending diagonal starting from (1, 1)' do
       expect(game.create_descending_arr(1, 1)).to eq(['x', 'x', 'x', ' ', ' '])
+    end
+  end
+
+  describe '#board_full?' do
+    context 'When the board is full' do
+      before do
+        game.instance_variable_set(:@board, [
+          ['x', 'o', 'x', 'o', 'x', 'o', 'x'],
+          ['x', 'o', 'x', 'o', 'x', 'o', 'x'],
+          ['x', 'o', 'x', 'o', 'x', 'o', 'x'],
+          ['o', 'x', 'o', 'x', 'o', 'x', 'o'],
+          ['o', 'x', 'o', 'x', 'o', 'x', 'o'],
+          ['o', 'x', 'o', 'x', 'o', 'x', 'o']
+        ])
+      end
+
+      it 'Returns true' do
+        expect(game).to be_board_full
+      end
+    end
+
+    context 'When the board is not full' do
+      before do
+        game.instance_variable_set(:@board, [
+          ['x', 'o', 'x', 'o', 'x', 'o', ' '],
+          ['x', 'o', 'x', 'o', 'x', 'o', 'x'],
+          ['x', 'o', 'x', 'o', 'x', 'o', 'x'],
+          ['o', 'x', 'o', 'x', 'o', 'x', 'o'],
+          ['o', 'x', 'o', 'x', 'o', 'x', 'o'],
+          ['o', 'x', 'o', 'x', 'o', 'x', 'o']
+        ])
+      end
+
+      it 'Returns false' do
+        expect(game).not_to be_board_full
+      end
     end
   end
 

@@ -8,7 +8,11 @@ class ConnectFour
     show_board
     player_move
 
-    puts "'#{@turn_player}' wins!"
+    if game_over?
+      puts "'#{@turn_player}' wins!"
+    else
+      puts "It's a draw"
+    end
   end
 
   def player_move
@@ -27,7 +31,7 @@ class ConnectFour
       place_token(player_input - 1)
       show_board
 
-      break if game_over?
+      break if game_over? || board_full?
 
       @turn_player = if @turn_player == 'o'
                        'x'
@@ -126,6 +130,10 @@ class ConnectFour
     end
 
     descending_arr
+  end
+
+  def board_full?
+    !@board.flatten.include?(' ')
   end
 
   def show_board
